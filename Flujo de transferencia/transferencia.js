@@ -160,8 +160,13 @@ function buscarUsuario(celular) {
 let celularEmisor = prompt("Ingrese su celular: ");
 let origen = buscarUsuario(celularEmisor);
 
-let celularDestinatario = prompt("Ingrese número de celular del destinatario: ");
-let destino = buscarUsuario(celularDestinatario);
+let rpta = '';
+do {
+    celularDestinatario = prompt("Ingrese número de celular del destinatario: ");
+    destino = buscarUsuario(celularDestinatario);
+    rpta = prompt("Enviara dinero al usuario "+JSON.stringify(destino.nombreCompleto)+"de numero "+JSON.stringify(destino.celular)
+    +"\nEs correcto el destinatario? ");
+} while (rpta.toLowerCase()=='no');
 
 let monto = parseFloat(prompt("Ingrese monto a transferir: "));
 
