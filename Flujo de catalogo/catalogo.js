@@ -37,9 +37,6 @@ const operaciones = [
 ];
 
 let numeroCelular;
-let usarFiltros;
-let detalleOperacionId;
-let deseaCompartir;
 let operacionesDelUsuario;
 
 numeroCelular = prompt("Ingrese su numero de celular: ");
@@ -53,24 +50,36 @@ function mostrarOperaciones() {
     } else {
         operacionesDelUsuario.forEach(op => {
             if (numeroCelular == op.usuario_origen) {
-                console.log(`ID: ${op.id_operacion}, Yapeaste un monto de: ${op.monto_operacion}, Usuario destino: ${op.usuario_destino}, Fecha: ${op.fecha} `);
+                console.log(`ID: ${op.id_operacion}, -${op.monto_operacion}, Destino: ${op.usuario_destino}, Fecha: ${op.fecha} `);
             } else {
-                console.log(`ID: ${op.id_operacion}, Te yapearon un monto de: ${op.monto_operacion}, Usuario origen: ${op.usuario_origen}, Fecha: ${op.fecha} `);
+                console.log(`ID: ${op.id_operacion}, +${op.monto_operacion}, Origen: ${op.usuario_origen}, Fecha: ${op.fecha} `);
             }
         });
-        
-        usarFiltros = confirm("¿Filtrar operaciones por periodo?");
+
+        let usarFiltros = confirm("¿Filtrar operaciones por periodo?");
+        let detalleOperacionId;
         if (usarFiltros) {
-            elegirFiltro();
+            let operacionesFiltradas = obtenerOperacionesPorFiltro();
+            if (operacionesFiltradas.length != 0) {
+                detalleOperacionId = prompt("Ingrese el id de la operacion que desea ver en detalle (solo de las filtradas): ");
+                verDetalleMovimiento(detalleOperacionId, operacionesFiltradas);
+            } else {
+                console.log("No hay operaciones según el filtro elegido.")
+                detalleOperacionId = prompt("Ingrese el id de la operacion que desea ver en detalle (ver lista de operaciones): ");
+                verDetalleMovimiento(detalleOperacionId, operacionesDelUsuario);
+            }
+            
+        } else {
+            detalleOperacionId = prompt("Ingrese el id de la operacion que desea ver en detalle (ver lista de operaciones): ");
+            verDetalleMovimiento(detalleOperacionId, operacionesDelUsuario);
         }
-        detalleOperacionId = prompt("Ingrese el id_operacion que desea ver en detalle: ");
-        verDetalleMovimiento(detalleOperacionId);
-        deseaCompartir = confirm("¿Deseas compartir comprobante?");
+        
+        let deseaCompartir = confirm("¿Deseas compartir comprobante?");
         compartir(deseaCompartir);
     }
 }
 
-function elegirFiltro() {
+function obtenerOperacionesPorFiltro() {
     console.log("Seleccionando el filtro de movimiento por período.");
     let filtro;
     let dias=0;
@@ -89,8 +98,16 @@ function elegirFiltro() {
     let fechaActual = new Date();
     let fechaLimite = restarDias(fechaActual, dias);
     let operacionesFiltradasDelUsuario = operacionesDelUsuario.filter(op => new Date(op.fecha) >= fechaLimite);
-    console.log(`Operaciones de los últimos ${dias} días:`, operacionesFiltradasDelUsuario);
-    
+
+    console.log(`Operaciones de los últimos ${dias} días:`);
+    operacionesFiltradasDelUsuario.forEach(op => {
+        if (numeroCelular == op.usuario_origen) {
+            console.log(`ID: ${op.id_operacion}, -${op.monto_operacion}, Destino: ${op.usuario_destino}, Fecha: ${op.fecha} `);
+        } else {
+            console.log(`ID: ${op.id_operacion}, +${op.monto_operacion}, Origen: ${op.usuario_origen}, Fecha: ${op.fecha} `);
+        }
+    });
+    return operacionesFiltradasDelUsuario;
 }
 
 function restarDias(fechaActual, dias) {
@@ -99,33 +116,34 @@ function restarDias(fechaActual, dias) {
     return fecha;
 }
 
-function verDetalleMovimiento(detalleOperacionId) {
+function verDetalleMovimiento(detalleOperacionId, operacionesArray) {
     let operacionElegida;
     while (true) {
-        operacionElegida = operacionesDelUsuario.filter(op => op.id_operacion == detalleOperacionId);
+        operacionElegida = operacionesArray.filter(op => op.id_operacion == detalleOperacionId);
     
         if (operacionElegida.length > 0) {
             console.log("Viendo detalle de la operación "+detalleOperacionId);
-            console.log(operacionElegida);
+            operacionElegida.forEach(op => {
+                if (numeroCelular == op.usuario_origen) {
+                    console.log(`ID: ${op.id_operacion}, Yapeaste un monto de: ${op.monto_operacion}, Usuario destino: ${op.usuario_destino}, Fecha: ${op.fecha} `);
+                } else {
+                    console.log(`ID: ${op.id_operacion}, Te yapearon un monto de: ${op.monto_operacion}, Usuario origen: ${op.usuario_origen}, Fecha: ${op.fecha} `);
+                }
+            });
+            
             break;
         } else {
             console.log("El id ingresado es incorrecto. Intente de nuevo.");
-            detalleOperacionId = prompt("Ingrese el id_operacion que desea ver en detalle: ");
+            detalleOperacionId = prompt("Ingrese el id de la operacion que desea ver en detalle.");
         }
     }
 }
 
-
-
 function compartir(deseaCompartir) {
     if (deseaCompartir) {
-        console.log("Comprobante enviado de la operación "+detalleOperacionId);
-        regresarPantallaPrincipal();
+        console.log("Comprobante enviado");
+        console.log("Regresó a la pantalla principal.");
     } else {
-        regresarPantallaPrincipal();
+        console.log("Regresó a la pantalla principal.");
     }
-}
-
-function regresarPantallaPrincipal() {
-    console.log("Regresó a la pantalla principal.");
 }
