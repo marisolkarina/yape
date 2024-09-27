@@ -154,7 +154,7 @@ function registro() {
         if (confirmoRegistro) {
             esValidacionExitosa(confirmoRegistro);
         } else {
-            login();
+            console.log("Registro fallido.");
         }
     }
     
