@@ -59,16 +59,7 @@ let numeroCelular;
 let numeroDNI;
 let correoElectronico;
 
-iniciarYape();
-function iniciarYape () {
-    let tieneCuenta = confirm("Bienvenido a YAPE. \n¿Tienes una cuenta?");
-    if (tieneCuenta==true) {
-        login();
-    } else {
-        registro();
-    }
-}
-
+login();
 function login () {
     numeroCelular = prompt("INICIO DE SESIÓN \nIngresar celular: ");
     const usuarioExistente = verificarUsuario(numeroCelular);
@@ -102,7 +93,7 @@ function login () {
 function recuperarCuenta () {
     numeroCelular = prompt("RECUPERACION DE CUENTA\nIngrese celular");
     if (verificarUsuario(numeroCelular)) { 
-        deseoCodigoVerificacion = confirm("Enviar código de verificación");
+        deseoCodigoVerificacion = confirm("Solicitar código de verificación");
         enviarCodigoVerificacion(deseoCodigoVerificacion);
         contrasena = prompt("Crear una nueva contraseña de 6 dígitos: ");
         let usuarioHallado = verificarUsuario(numeroCelular);
@@ -125,7 +116,7 @@ function enviarCodigoVerificacion(deseoCodigoVerificacion) {
         console.log(generarCodigo());
         verificarCodigo();
     } else {
-        deseoCodigoVerificacion = confirm("Enviar código de verificación");
+        deseoCodigoVerificacion = confirm("Solicitar código de verificación");
         enviarCodigoVerificacion(deseoCodigoVerificacion);
     }
 }
@@ -151,9 +142,9 @@ function registro() {
     //verificando que el usuario a registrar no exista en la bd
     if (verificarUsuario(numeroCelular)) {
         console.log("El usuario ya existe.");
-        iniciarYape();
+        login();
     } else {
-        deseoCodigoVerificacion = confirm("Enviar código de verificación");
+        deseoCodigoVerificacion = confirm("Solicitar código de verificación");
         enviarCodigoVerificacion(deseoCodigoVerificacion);
         nombreCompleto=prompt("Ingresar nombre completo: ");
         numeroDNI = prompt("Ingresar número de DNI: ");
@@ -163,7 +154,7 @@ function registro() {
         if (confirmoRegistro) {
             esValidacionExitosa(confirmoRegistro);
         } else {
-            iniciarYape();
+            login();
         }
     }
     
