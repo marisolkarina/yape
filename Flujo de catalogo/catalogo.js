@@ -4,6 +4,7 @@ const operaciones = [
         monto_operacion: 50,
         usuario_origen: '999999999',
         usuario_destino: '999999997',
+        moneda: "soles",
         fecha: "2024-09-24"
     },
     {
@@ -11,6 +12,7 @@ const operaciones = [
         monto_operacion: 30,
         usuario_origen: '999999998',
         usuario_destino: '999999996',
+        moneda: "soles",
         fecha: "2024-07-20"
     },
     {
@@ -18,20 +20,23 @@ const operaciones = [
         monto_operacion: 20,
         usuario_origen: '999999998',
         usuario_destino: '999999999',
-        fecha: "2024-09-17"
+        moneda: "dolares",
+        fecha: "2024-09-17",
     },
     {
         id_operacion: 4,
         monto_operacion: 30,
         usuario_origen: '999999994',
         usuario_destino: '999999996',
-        fecha: "2024-03-23"
+        moneda: "dolares",
+        fecha: "2024-03-23",
     },
     {
         id_operacion: 5,
         monto_operacion: 30,
         usuario_origen: '999999998',
         usuario_destino: '999999999',
+        moneda: "soles",
         fecha: "2024-09-03"
     }
 ];
@@ -125,9 +130,9 @@ function verDetalleMovimiento(detalleOperacionId, operacionesArray) {
             console.log("Viendo detalle de la operación "+detalleOperacionId);
             operacionElegida.forEach(op => {
                 if (numeroCelular == op.usuario_origen) {
-                    console.log(`ID: ${op.id_operacion}, Yapeaste un monto de: ${op.monto_operacion}, Usuario destino: ${op.usuario_destino}, Fecha: ${op.fecha} `);
+                    console.log(`ID: ${op.id_operacion}, Yapeaste un monto de: ${op.monto_operacion}, Usuario destino: ${op.usuario_destino}, Moneda: ${op.moneda}, Fecha: ${op.fecha} `);
                 } else {
-                    console.log(`ID: ${op.id_operacion}, Te yapearon un monto de: ${op.monto_operacion}, Usuario origen: ${op.usuario_origen}, Fecha: ${op.fecha} `);
+                    console.log(`ID: ${op.id_operacion}, Te yapearon un monto de: ${op.monto_operacion}, Usuario origen: ${op.usuario_origen}, Moneda: ${op.moneda}, Fecha: ${op.fecha} `);
                 }
             });
             
