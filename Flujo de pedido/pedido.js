@@ -1,3 +1,4 @@
+//Transferencia de dinero
 class Operacion {
     constructor(id_operacion, monto_operacion, usuario_origen, usuario_destino, moneda, fecha) {
         this.id_operacion = id_operacion;

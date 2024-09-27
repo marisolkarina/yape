@@ -78,21 +78,24 @@ function login () {
         do {
             contrasena = prompt("Ingresar contraseña");
             if (usuarioExistente.contrasena === contrasena) {
-                console.log("Has iniciado sesión exitosamente");
+                console.log("Has iniciado sesión exitosamente. Mostrando interfaz de yape.");
             } else {
                 console.log("Contraseña incorrecta.");
                 olvidoContrasena = confirm("¿Olvidó contraseña?");
+                console.log("Recuperar cuenta");
+                recuperarCuenta();
+                olvidoContrasena == false;
             }
         } while(olvidoContrasena == false);
-    
-        if(olvidoContrasena == true) {
-            console.log("Recuperar cuenta");
-            recuperarCuenta();
-        }
             
     } else {
-        console.log("El número de celular no está registrado. Por favor, crea una cuenta nueva.");
-        registro();
+        console.log("El número de celular no está registrado. Por favor, crea una cuenta nueva o corrige el celular ingresado.");
+        let deseaRegistrarse = confirm('Desea registrarse?');
+        if (deseaRegistrarse) {
+            registro();
+        } else {
+            login();
+        }
     }
 }
 
@@ -108,6 +111,7 @@ function recuperarCuenta () {
         arrUsuarios[posicion].contrasena = contrasena;
         console.log("Contraseña actualizada");
         console.log(arrUsuarios[posicion]);
+        login();
     } else {
         console.log("La cuenta que intenta recuperar no existe. Vuelva a ingresar celular.");
         recuperarCuenta();
@@ -136,8 +140,15 @@ function verificarCodigo() {
 }
 
 function registro() {
-    numeroCelular = prompt("REGISTRO\nIngresar celular");
-    //verificando que el usuario a registrar no exista
+    while(true) {
+        numeroCelular = prompt("REGISTRO\nIngresar celular");
+        if (numeroCelular != '') {
+            break;
+        } else {
+            console.log("Debe ingresar un celular.")
+        }
+    }
+    //verificando que el usuario a registrar no exista en la bd
     if (verificarUsuario(numeroCelular)) {
         console.log("El usuario ya existe.");
         iniciarYape();
@@ -160,8 +171,11 @@ function registro() {
 
 function esValidacionExitosa(registroValidado) {
     if (registroValidado) {
-        arrUsuarios.push(new Usuario(nombreCompleto,0,contrasena,numeroCelular,numeroDNI, correoElectronico));
+        let nuevoUsuario = new Usuario(nombreCompleto,0,contrasena,numeroCelular,numeroDNI, correoElectronico);
+        arrUsuarios.push(nuevoUsuario);
         console.log(arrUsuarios);
+        console.log("Nuevo usuario:");
+        console.log(nuevoUsuario)
         let deseoIniciarSesion = confirm("¿Desea iniciar sesion?");
         if (deseoIniciarSesion) {
             console.log("Registro exitoso. Inicie Sesión.");
