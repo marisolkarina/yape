@@ -6,6 +6,29 @@
     <title>Document</title>
 </head>
 <body>
-    <script src="pedido.js"></script>
+    <div>
+        <h1>Pedido: transferencia de dinero</h1>
+        <p>Ingrese su celular: <input type="text" id="celularEmisor"/></p>
+        <p>Ingrese el celular del receptor <input type="text" id="celularReceptor"/></p>
+        <button onClick="buscarReceptor()">Buscar receptor</button>
+        <p id="mensajeError"></p>
+        <div id="receptorEncontrado"></div>
+
+        <p>Ingrese monto a transferir: <input type="text" id="monto"/></p>
+
+        <p>Tipo de moneda: </p>
+        <input type="radio" id="soles" name="moneda" value="1">
+        <label for="soles">Soles</label><br>
+        <input type="radio" id="dolares" name="moneda" value="2">
+        <label for="dolares">Dólares</label><br>
+        <p id="mensajeMoneda"></p>
+        <p id="mensajeSaldo"></p>
+        <p id="saldoNuevo"></p>
+        <div id="operacionRealizada"></div>
+        
+
+        <button onClick="ejecutarTransferencia()">Yapear</button>
+    </div>
+    <script src="pedido.js"> </script>
 </body>
 </html>
