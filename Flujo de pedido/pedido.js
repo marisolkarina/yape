@@ -192,6 +192,7 @@ function enviarDinero(origen, destino, monto) {
             origen.saldo -= monto;
             destino.saldo += monto;
 
+            console.log("\nScripts para actualizar saldos:");
             let sqlUpdate1 = "UPDATE bdyape.usuario set saldo = "+origen.saldo+
                             " where id_usuario = "+origen.id_usuario;
             console.log(sqlUpdate1)
@@ -201,19 +202,20 @@ function enviarDinero(origen, destino, monto) {
 
             id_operacion++;
             operaciones.push(new Operacion(id_operacion, monto, origen.id_usuario, destino.id_usuario, null, 1, fechaActual));
-            let sqlInsertOperacion = "INSERT INTO operacion (id_operacion, monto, id_moneda, id_usuario_emisor, id_usuario_receptor, id_cambio)"+
+            let sqlInsertOperacion = "INSERT INTO operacion (id_operacion, monto, id_moneda, id_usuario_emisor, id_usuario_receptor, id_cambio, fecha)"+
             "VALUES ("+id_operacion+", "+monto+", "+ moneda.value +", "+ origen.id_usuario +", "+ destino.id_usuario + ", " + 
-            buscarTipoCambio(fechaActual).id_tipo_cambio + ");"
+            buscarTipoCambio(fechaActual).id_tipo_cambio + ", NOW());"
+            console.log("\nScript para insertar nueva operacion");
             console.log(sqlInsertOperacion);
 
             document.getElementById("mensajeSaldo").innerHTML = "Ha yapeado exitosamente.";
             document.getElementById("operacionRealizada").innerHTML = obtenerDatosOperacion(operaciones, destino);
-            let sqlSelectDatosOperacion = "SELECT u.id_usuario, u.nombre, o.id_operacion, o.monto, o.id_moneda, u2.nombre as receptor, tc.fecha" +
+            let sqlSelectDatosOperacion = "SELECT u.id_usuario, u.nombre, o.id_operacion, o.monto, o.id_moneda, u2.nombre as receptor, o.fecha" +
                 " from bdyape.usuario u "+
                 "\nleft join bdyape.operacion o on u.id_usuario = o.id_usuario_emisor"+
-                "\nleft join bdyape.tipo_cambio tc on tc.id_tipo_cambio = o.id_cambio"+
                 "\nleft join bdyape.usuario u2 on u2.id_usuario = o.id_usuario_receptor"+ 
                 "\nwhere u.id_usuario = "+ origen.id_usuario;
+            console.log("\nScript para ver operacion realizada (solo como emisor)");
             console.log(sqlSelectDatosOperacion);
                     
         } else {
@@ -232,19 +234,20 @@ function enviarDinero(origen, destino, monto) {
     
             id_operacion++;
             operaciones.push(new Operacion(id_operacion, monto, origen.id_usuario, destino.id_usuario, buscarTipoCambio(fechaActual).id_tipo_cambio, 2, fechaActual));
-            let sqlInsertOperacion = "INSERT INTO operacion (id_operacion, monto, id_moneda, id_usuario_emisor, id_usuario_receptor, id_cambio)"+
+            let sqlInsertOperacion = "INSERT INTO operacion (id_operacion, monto, id_moneda, id_usuario_emisor, id_usuario_receptor, id_cambio, fecha)"+
             "VALUES ("+id_operacion+", "+monto+", "+ moneda.value +", "+"origen.id_usuario" +", "+ destino.id_usuario + ", " + 
-            buscarTipoCambio(fechaActual).id_tipo_cambio + ");"
+            buscarTipoCambio(fechaActual).id_tipo_cambio + ", NOW());"
+            console.log("Script para insertar nueva operacion");
             console.log(sqlInsertOperacion);
 
             document.getElementById("mensajeSaldo").innerHTML = "Ha yapeado exitosamente.";
             document.getElementById("operacionRealizada").innerHTML = obtenerDatosOperacion(operaciones, destino);
-            let sqlSelectDatosOperacion = "SELECT u.id_usuario, u.nombre, o.id_operacion, o.monto, o.id_moneda, u2.nombre as receptor, tc.fecha" +
+            let sqlSelectDatosOperacion = "SELECT u.id_usuario, u.nombre, o.id_operacion, o.monto, o.id_moneda, u2.nombre as receptor, o.fecha" +
                 " from bdyape.usuario u "+
                 "\nleft join bdyape.operacion o on u.id_usuario = o.id_usuario_emisor"+
-                "\nleft join bdyape.tipo_cambio tc on tc.id_tipo_cambio = o.id_cambio"+
                 "\nleft join bdyape.usuario u2 on u2.id_usuario = o.id_usuario_receptor"+ 
                 "\nwhere u.id_usuario = "+ origen.id_usuario;
+            console.log("\nScript para ver operacion realizada (solo como emisor)");
             console.log(sqlSelectDatosOperacion);
 
         } else {
