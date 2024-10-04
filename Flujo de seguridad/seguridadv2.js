@@ -91,7 +91,7 @@ function ingresar() {
 
 function solicitarCodigoVerificacionRecuperar() {
     numeroCelularRecuperar = document.getElementById("numeroCelularRecuperar").value;
-    console.log(numeroCelularRecuperar);
+    //console.log(numeroCelularRecuperar);
     if (verificarUsuario(numeroCelularRecuperar)) {
         deseoCodigoVerificacion = true;
         enviarCodigoVerificacion(deseoCodigoVerificacion);
