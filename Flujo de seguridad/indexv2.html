@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>Seguridad: Ingreso a la web</h1>
+        <p>Ingrese su número de celular: <input type="text" id="numeroCelular"/></p>
+        <p>Ingresa su contraseña: <input type="text" id="contrasena"/></p>
+        <button onClick="ingresar()">Ingresar</button>
+        <p id="mensajeErrorIngreso"></p>
+        <div id="receptorEncontrado"></div>
+
+        <h1>Seguridad: Recuperación de cuenta</h1>
+        <p>Ingrese su número de celular: <input type="text" id="numeroCelularRecuperar"/></p>
+        <button onClick="solicitarCodigoVerificacionRecuperar()">Solicitar código de verificación</button>
+        <p id="mensajeErrorSolicito"></p>
+
+        <p>Ingrese su código de verificación: <input type="text" id="codigoAVerificar"/></p>
+        <button onClick="verificarCodigo()">Verificar Código</button>
+        <p id="mensajeErrorCodigo"></p>
+
+        <p>Ingrese su nueva contraseña (6 dígitos): <input type="text" id="nuevaContrasena"/></p>
+        <button onClick="actualizarContrasena()">Actualizar Contrasena</button>
+        <p id="mensajeErrorContrasena"></p>
+
+        <h1>Seguridad: Registro de cuenta</h1>
+        <p>Ingrese su número de celular: <input type="text" id="numeroCelularRegistro"/></p>
+        <button onClick="solicitarCodigoVerificacionRegistro()">Solicitar código de verificación</button>
+        <p id="mensajeErrorVerificarUsuario"></p>
+
+        <p>Ingrese su código de verificación: <input type="text" id="codigoAVerificarRegistro"/></p>
+        <button onClick="verificarCodigoRegistro()">Verificar Código</button>
+        <p id="mensajeErrorCodigoRegistro"></p>
+
+        <p>Ingrese su nombre completo: <input type="text" id="nombreCompletoRegistro"/></p>
+        <p>Ingrese su número de DNI: <input type="text" id="numeroDNIRegistro"/></p>
+        <p>Ingrese su correo electrónico: <input type="text" id="correoElectronicoRegistro"/></p>
+        <p>Ingrese su contraseña (6 dígitos): <input type="text" id="contrasenaRegistro"/></p>
+        <button onClick="confirmarRegistro()">Confirmar Registro</button>
+        <p id="mensajeErrorConfirmarRegistro"></p>
+
+
+    </div>
+    <script src="seguridadv2.js"> </script>
+</body>
+</html>
