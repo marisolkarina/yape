@@ -76,7 +76,7 @@ function ingresar() {
             if (usuarioExistente.contrasena === contrasena) {
                 document.getElementById("mensajeErrorIngreso").innerHTML = "Has iniciado sesión exitosamente. Mostrando interfaz de yape.";
                 let sqlSelectUsuario = "SELECT id_usuario, nombre, celular, contrasenia, correo, dni, saldo from bdyape.usuario"+
-                    "\nwhere u.celular = " + usuarioExistente.celular;
+                    "\nWHERE u.celular = \"" + usuarioExistente.celular + "\";";
                 console.log(sqlSelectUsuario);
             } else {
                 document.getElementById("mensajeErrorIngreso").innerHTML = "Contraseña incorrecta. Si olvido su contraseña, puede recuperarla.";
