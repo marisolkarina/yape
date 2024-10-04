@@ -50,7 +50,7 @@ const operaciones = [
         monto: 50,
         id_usuario_emisor: 1,
         id_usuario_receptor: 3,
-        id_cambio: 0,
+        id_cambio: null,
         id_moneda: 1,
         fecha: "2024-09-24"
     },
@@ -59,7 +59,7 @@ const operaciones = [
         monto: 30,
         id_usuario_emisor: 2,
         id_usuario_receptor: 4,
-        id_cambio: 0,
+        id_cambio: null,
         id_moneda: 1,
         fecha: "2024-07-20"
     },
@@ -68,7 +68,7 @@ const operaciones = [
         monto: 20,
         id_usuario_emisor: 2,
         id_usuario_receptor: 1,
-        id_cambio: 0,
+        id_cambio: 2,
         id_moneda: 2,
         fecha: "2024-10-02",
     },
@@ -77,7 +77,7 @@ const operaciones = [
         monto: 30,
         id_usuario_emisor: 5,
         id_usuario_receptor: 4,
-        id_cambio: 1,
+        id_cambio: 2,
         id_moneda: 2,
         fecha: "2024-10-01",
     },
@@ -95,7 +95,7 @@ const operaciones = [
         monto: 80,
         id_usuario_emisor: 1,
         id_usuario_receptor: 4,
-        id_cambio: 0,
+        id_cambio: null,
         id_moneda: 1,
         fecha: "2024-03-23"
     }
@@ -141,7 +141,6 @@ const tipo_moneda = [
 ]
 
 
-
 let operacionesDelUsuario;
 let operacionesFiltradasDelUsuario;
 
@@ -151,16 +150,21 @@ function mostrarOperaciones() {
     document.getElementById("operacionDetallada").innerHTML = "";
     document.getElementById("compartir").innerHTML = "";
 
-    let numeroCelular = document.getElementById("celularEmisor").value;
+    let numeroCelular = document.getElementById("celular").value;
     let usuarioLogueado = buscarUsuarioPorCelular(numeroCelular);
 
-    operacionesDelUsuario = operaciones.filter(op => 
-        ((op.id_usuario_emisor==usuarioLogueado.id_usuario) || (op.id_usuario_receptor==usuarioLogueado.id_usuario))
-    );
+    if (usuarioLogueado) {
+        operacionesDelUsuario = operaciones.filter(op => 
+            ((op.id_usuario_emisor==usuarioLogueado.id_usuario) || (op.id_usuario_receptor==usuarioLogueado.id_usuario))
+        );
+    } else {
+        document.getElementById("operacionesRegistradas").innerHTML = "Ingrese celular valido.";
+        return;
+    }
 
     console.log("Operaciones realizadas del usuario "+numeroCelular+":");
     if (operacionesDelUsuario.length == 0) {
-        console.log('No hay operaciones registradas');
+        // console.log('No hay operaciones registradas');
         document.getElementById("operacionesRegistradas").innerHTML = "<p>No hay operaciones registradas.</p>";
     } else {
         let impresionOperaciones = "";
@@ -184,6 +188,31 @@ function mostrarOperaciones() {
         console.log(operacionesDelUsuario);
 
         document.getElementById("operacionesRegistradas").innerHTML = impresionOperaciones;
+
+        console.log("Script para ver todas las operaciones del usuario logueado: ");
+        let sqlSelectUperaciones = `select u.id_usuario, u.nombre as userLogged, o.id_operacion, o.monto, o.id_moneda, o.id_usuario_emisor, o.id_usuario_receptor, o.fecha from usuario u 
+left join operacion o on (u.id_usuario = o.id_usuario_emisor or u.id_usuario = o.id_usuario_receptor)
+where u.id_usuario = ${usuarioLogueado.id_usuario}`
+        console.log(sqlSelectUperaciones);
+
+        console.log("\nScript para ver solo las operaciones de envío de dinero(-): ");
+        let sqlSelectOperacionesEnvio = `select u.nombre as userLogged_emisor, o.id_operacion, o.monto, tm.nombre_moneda, u2.nombre as receptor, o.fecha from usuario u 
+left join operacion o on u.id_usuario = o.id_usuario_emisor
+left join tipo_cambio tc on tc.id_tipo_cambio = o.id_cambio
+left join tipo_moneda tm on tm.id_moneda = o.id_moneda
+left join usuario u2 on u2.id_usuario = o.id_usuario_receptor 
+where u.id_usuario = ${usuarioLogueado.id_usuario}`;
+        console.log(sqlSelectOperacionesEnvio);
+
+        console.log("\nScript para ver solo las operaciones de recibo de dinero(+): ");
+        let sqlSelectOperacionesRecibo = `select u.nombre as userLogged_receptor, o.id_operacion, o.monto, tm.nombre_moneda, u2.nombre as emisor, o.fecha from usuario u 
+left join operacion o on u.id_usuario = o.id_usuario_receptor 
+left join tipo_cambio tc on tc.id_tipo_cambio = o.id_cambio
+left join tipo_moneda tm on tm.id_moneda = o.id_moneda
+left join usuario u2 on u2.id_usuario = o.id_usuario_emisor 
+where u.id_usuario = 1`;
+        console.log(sqlSelectOperacionesRecibo);
+
     }
 
 }
@@ -207,7 +236,7 @@ function obtenerOperacionesPorFiltro() {
     let fechaActual = new Date();
     let fechaLimite = restarDias(fechaActual, dias);
     operacionesFiltradasDelUsuario = operacionesDelUsuario.filter(op => new Date(op.fecha) >= fechaLimite);
-    let numeroCelular = document.getElementById("celularEmisor").value;
+    let numeroCelular = document.getElementById("celular").value;
     let usuarioLogueado = buscarUsuarioPorCelular(numeroCelular);
 
     if (operacionesFiltradasDelUsuario.length != 0) {
@@ -229,6 +258,14 @@ function obtenerOperacionesPorFiltro() {
                 ", monto: +"+op.monto+ ", id_moneda: "+ op.id_moneda +", emisor: "+usuarioOrigen.nombreCompleto+", fecha: "+op.fecha+
                 " <button onClick='verDetalleMovimiento("+op.id_operacion+")'>Ver detalle</button> </p>";
             }
+
+            console.log("\nScript para ver operaciones filtradas por los últimos "+dias+" dias");
+            let sqlSelectOperacionesFiltradas = `select u.id_usuario, u.nombre as userLogged,  o.id_operacion, o.monto, o.id_moneda, o.id_usuario_emisor, o.id_usuario_receptor, o.fecha from usuario u 
+left join operacion o on (u.id_usuario = o.id_usuario_emisor or u.id_usuario = o.id_usuario_receptor)
+left join tipo_cambio tc on tc.id_tipo_cambio = o.id_cambio 
+WHERE tc.fecha BETWEEN NOW() - INTERVAL ${dias} DAY AND NOW() and u.id_usuario = ${usuarioLogueado.id_usuario};`
+            console.log(sqlSelectOperacionesFiltradas);
+
         });
 
         document.getElementById("operacionesFiltradas").innerHTML = impresionOperacionesFiltradas;
@@ -253,7 +290,7 @@ function restarDias(fechaActual, dias) {
 
 function verDetalleMovimiento(detalleOperacionId) {
     document.getElementById("compartir").innerHTML = "";
-    let numeroCelular = document.getElementById("celularEmisor").value;
+    let numeroCelular = document.getElementById("celular").value;
     let usuarioLogueado = buscarUsuarioPorCelular(numeroCelular);
 
     let operacionElegida;
@@ -300,7 +337,7 @@ function verDetalleMovimiento(detalleOperacionId) {
             if (op.id_moneda == 1) {
                 impresionDetalle = impresionDetalle + `<tr><td>ID:</td><td>${op.id_operacion}</td></tr>
                 <tr><td>Te yapearon un monto de:</td><td>${op.monto}</td></tr>
-                <tr><td>Moneda:</td><td>Dolares</td></tr>
+                <tr><td>Moneda:</td><td>Soles</td></tr>
                 <tr><td>ID emisor:</td><td>${op.id_usuario_emisor}</td></tr>
                 <tr><td>Celular emisor:</td><td>${usuarioOrigen.celular}</td></tr>
                 <tr><td>Nombre emisor:</td><td>${usuarioOrigen.nombreCompleto}</td></tr>
@@ -318,8 +355,19 @@ function verDetalleMovimiento(detalleOperacionId) {
                 <tr><td colspan="2"><button onClick='compartir(${op.id_operacion})'>Compartir</button></td></tr>`;
             }
         }
+
+        console.log("\nScript para ver detalle de una operacion")
+    let sqlSelectDetalle = `select u.id_usuario, u.nombre as userLogged, o.id_operacion, o.monto, tm.nombre_moneda, tc.valor_cambio, o.id_usuario_emisor, u2.nombre as emisor, o.id_usuario_receptor, u3.nombre as receptor from usuario u 
+left join operacion o on (u.id_usuario = o.id_usuario_emisor or u.id_usuario = o.id_usuario_receptor)
+left join tipo_cambio tc on tc.id_tipo_cambio = o.id_cambio
+left join tipo_moneda tm on tm.id_moneda = o.id_moneda
+left join usuario u2 on u2.id_usuario = o.id_usuario_emisor
+left join usuario u3 on u3.id_usuario = o.id_usuario_receptor 
+where u.id_usuario = ${usuarioLogueado.id_usuario} and o.id_operacion = ${op.id_operacion}`
+    console.log(sqlSelectDetalle);
+
     });
-    document.getElementById("operacionDetallada").innerHTML = impresionDetalle;
+    document.getElementById("operacionDetallada").innerHTML = impresionDetalle;  
 
 }
 
