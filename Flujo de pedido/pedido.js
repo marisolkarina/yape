@@ -56,8 +56,11 @@ function buscarUsuario(celular) {
 }
 
 function buscarReceptor() {
+    document.getElementById("permitirTransferencia").innerHTML = "";
+    
     let celularReceptor = document.getElementById("celularReceptor").value;
     console.log(celularReceptor);
+    let origen = buscarUsuario(celularEmisor);
 
     document.getElementById("receptorEncontrado").innerHTML = "";
 
@@ -65,6 +68,17 @@ function buscarReceptor() {
     if ( usuarioEncontrado != null) {
         document.getElementById("mensajeError").innerHTML = "Receptor encontrado con éxito.";
         document.getElementById("receptorEncontrado").innerHTML = "Enviara dinero al usuario " + usuarioEncontrado.nombreCompleto + " de numero " + usuarioEncontrado.celular
+        document.getElementById("permitirTransferencia").innerHTML = `<p>Ingrese monto a transferir: <input type="text" id="monto"/></p>
+        <p>Tipo de moneda: </p>
+        <input type="radio" id="soles" name="moneda" value="1">
+        <label for="soles">Soles</label><br>
+        <input type="radio" id="dolares" name="moneda" value="2">
+        <label for="dolares">Dólares</label><br>
+        <p id="mensajeMoneda"></p>
+        <p id="mensajeSaldo"></p>
+        <p id="saldoNuevo"></p>
+        <div id="operacionRealizada"></div>
+        <button onClick="ejecutarTransferencia()">Yapear</button>`
     } else {
         document.getElementById("mensajeError").innerHTML = "Receptor no encontrado. Ingrese un número válido.";
     }
@@ -80,7 +94,9 @@ function ejecutarTransferencia() {
     let destino = buscarUsuario(celularReceptor);
     // Convertir el monto a un número
     monto = parseFloat(monto);
+
     enviarDinero(origen, destino, monto);
+    
     let nuevoSaldo = "";
     nuevoSaldo = nuevoSaldo + origen.saldo;
     document.getElementById("saldoNuevo").innerHTML = "Saldo actualizado: S/." + nuevoSaldo;
