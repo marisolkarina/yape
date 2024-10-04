@@ -10,6 +10,7 @@ class Usuario {
 }
 
 // JSON de usuarios
+
 let usuariosJson = '{"usuarioArreglo":[' +
 '{"nombreCompleto":"Marisol Pachauri",' +
 '"saldo": 100,' +
@@ -67,13 +68,16 @@ let correoElectronico;
 function ingresar() {
     numeroCelular = document.getElementById("numeroCelular").value;
     contrasena = document.getElementById("contrasena").value;
-    console.log(numeroCelular);
+    //console.log(numeroCelular);
     const usuarioExistente = verificarUsuario(numeroCelular);
 
     if (usuarioExistente) {
         do {
             if (usuarioExistente.contrasena === contrasena) {
                 document.getElementById("mensajeErrorIngreso").innerHTML = "Has iniciado sesión exitosamente. Mostrando interfaz de yape.";
+                let sqlSelectUsuario = "SELECT id_usuario, nombre, celular, contrasenia, correo, dni, saldo from bdyape.usuario"+
+                    "\nwhere u.celular = " + usuarioExistente.celular;
+                console.log(sqlSelectUsuario);
             } else {
                 document.getElementById("mensajeErrorIngreso").innerHTML = "Contraseña incorrecta. Si olvido su contraseña, puede recuperarla.";
             }
@@ -124,6 +128,10 @@ function actualizarContrasena() {
         let posicion = arrUsuarios.indexOf(usuarioHallado);
         arrUsuarios[posicion].contrasena = nuevaContrasena;
         document.getElementById("mensajeErrorContrasena").innerHTML = "Contraseña actualizada. Inicie sesión.";
+        let sqlActualizarContrasena = "UPDATE bdyape.usuario u" +
+        "\nSET u.contrasenia = \"" + usuarioHallado.contrasena + "\"" +
+        "\nWHERE u.celular = \"" + usuarioHallado.celular + "\";";
+        console.log(sqlActualizarContrasena);
     }
     else {
         document.getElementById("mensajeErrorContrasena").innerHTML = "Solicite el código de verificación o ingrese el código correcto.";
@@ -180,7 +188,11 @@ function agregarUsuario(nombreCompletoRegistro, saldoRegistro, contrasenaRegistr
 {
     let nuevoUsuario = new Usuario(nombreCompletoRegistro, saldoRegistro ,contrasenaRegistro, numeroCelularRegistro, numeroDNIRegistro, correoElectronicoRegistro);
     arrUsuarios.push(nuevoUsuario);
-    console.log(arrUsuarios);
+    //console.log(arrUsuarios);
+    let sqlNuevoUsuario = "INSERT INTO bdyape.usuario(nombre, contrasenia, correo, dni, celular, saldo)" + 
+    "\nVALUES (\"" + nombreCompletoRegistro + "\", \"" + contrasenaRegistro + "\", \"" + correoElectronicoRegistro +
+    "\", \"" + numeroDNIRegistro + "\", \"" + numeroCelularRegistro + "\", " + saldoRegistro + ");";
+    console.log(sqlNuevoUsuario);
 }
 
 
